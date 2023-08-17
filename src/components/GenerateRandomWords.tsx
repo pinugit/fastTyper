@@ -24,7 +24,7 @@ const GenerateRandomWords = ({ onType }: props) => {
   const [coordinateList, setCoordinateList] = useState<coordinateObject[]>([]);
   const [currentX, setCurrentX] = useState<number>();
   const [currentY, setCurrentY] = useState<number>();
-  const [count, setCount] = useState(1);
+  const [count, setCount] = useState(2);
 
   // Create an array of refs
   const pRefs = useRef<HTMLParagraphElement[]>([]);
@@ -55,10 +55,10 @@ const GenerateRandomWords = ({ onType }: props) => {
 
   const handleCorrectType = (isCorrect: boolean) => {
     if (isCorrect) {
+      setCount(count + 1);
       setCurrentX(coordinateList[count].x);
       setCurrentY(coordinateList[count].y);
       onType({ x: currentX, y: currentY });
-      setCount(count + 1);
     }
   };
 
