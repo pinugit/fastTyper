@@ -1,7 +1,11 @@
-import "./App.css";
+import GenerateRandomWords from "./components/GenerateRandomWords";
 
 function App() {
-  return <h1 className="font-bolds">hello world</h1>;
+  return (
+    <div>
+      <GenerateRandomWords />
+    </div>
+  );
 }
 
 export default App;
