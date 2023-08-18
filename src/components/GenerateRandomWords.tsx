@@ -15,16 +15,14 @@ interface props {
   onType: (coordinates: coordinates) => void;
 }
 const GenerateRandomWords = ({ onType }: props) => {
-  const [randomListLength, setRandomListLength] = useState(200);
+  const [randomListLength, setRandomListLength] = useState(10);
   const [randomWordList, setRandomWordList] = useState(
     getRandomWordList(commonWords, randomListLength)
   );
   const [activeWordIndex, setActiveWordIndex] = useState(0);
   const [activeLetterIndex, setActiveLetterIndex] = useState(0);
   const [coordinateList, setCoordinateList] = useState<coordinateObject[]>([]);
-  const [currentX, setCurrentX] = useState<number>();
-  const [currentY, setCurrentY] = useState<number>();
-  const [count, setCount] = useState(2);
+  const [count, setCount] = useState(1);
 
   // Create an array of refs
   const pRefs = useRef<HTMLParagraphElement[]>([]);
@@ -42,8 +40,7 @@ const GenerateRandomWords = ({ onType }: props) => {
     pRefs.current.forEach((p) => {
       const rect = p.getBoundingClientRect();
       if (p === pRefs.current[0]) {
-        setCurrentX(rect.left);
-        setCurrentY(rect.top);
+        onType({ x: rect.left, y: rect.top });
       }
 
       setCoordinateList((prev) => [
@@ -55,16 +52,14 @@ const GenerateRandomWords = ({ onType }: props) => {
 
   const handleCorrectType = (isCorrect: boolean) => {
     if (isCorrect) {
+      onType({ x: coordinateList[count].x, y: coordinateList[count].y });
       setCount(count + 1);
-      setCurrentX(coordinateList[count].x);
-      setCurrentY(coordinateList[count].y);
-      onType({ x: currentX, y: currentY });
     }
   };
 
   return (
     <>
-      <div className="flex flex-wrap h-40 min-w-[10%] overflow-hidden">
+      <div className="flex flex-wrap h-40 min-w-[10%] overflow-hidden scroll-auto">
         {randomWordList.map((word, wordIndex) => (
           <div className="flex ml-1" key={wordIndex}>
             {word.split("").map((letter, letterIndex) => (
