@@ -18,6 +18,7 @@ const GenerateRandomWords = ({ onType }: props) => {
   const [activeLetterIndex, setActiveLetterIndex] = useState(0);
   const [coordinateList, setCoordinateList] = useState<DOMRect[]>([]);
   const [count, setCount] = useState(1);
+  const inputFocusRef = useRef<HTMLInputElement>(null);
   // Create an array of refs
   const pRefs = useRef<HTMLParagraphElement[]>([]);
   pRefs.current = [];
@@ -54,21 +55,47 @@ const GenerateRandomWords = ({ onType }: props) => {
       setCount(count + 1);
     }
   };
+  const handleInputFocus = () => {
+    if (inputFocusRef.current) {
+      inputFocusRef.current.focus();
+    }
+  };
+
+  const getParagraphClassName = (
+    activeLetterIndex: number,
+    activeWordIndex: number,
+    wordIndex: number,
+    letterIndex: number
+  ) => {
+    if (activeLetterIndex === letterIndex && activeWordIndex == wordIndex) {
+      return "active";
+    } else if (
+      activeWordIndex > wordIndex ||
+      (activeWordIndex === wordIndex && activeLetterIndex >= letterIndex)
+    ) {
+      return "passed";
+    } else {
+      return "not-active";
+    }
+  };
 
   return (
     <>
-      <div className="flex flex-wrap h-40 min-w-[10%] overflow-auto scroll-auto border-4">
+      <div
+        onClick={handleInputFocus}
+        className="flex flex-wrap h-40 min-w-[10%] overflow-auto scroll-auto border-4"
+      >
         {randomWordList.map((word, wordIndex) => (
           <div className="flex ml-1" key={wordIndex}>
             {word.split("").map((letter, letterIndex) => (
               <p
                 ref={addToRefs}
-                className={
-                  activeLetterIndex === letterIndex &&
-                  activeWordIndex === wordIndex
-                    ? "active"
-                    : "not-active"
-                }
+                className={getParagraphClassName(
+                  activeLetterIndex,
+                  activeWordIndex,
+                  wordIndex,
+                  letterIndex
+                )}
                 key={letterIndex}
               >
                 {letter}
@@ -78,6 +105,7 @@ const GenerateRandomWords = ({ onType }: props) => {
         ))}
       </div>
       <TypeChecker
+        inputRef={inputFocusRef}
         wordList={randomWordList}
         onActiveLetterIndex={(index) => {
           setActiveLetterIndex(index);
@@ -90,5 +118,4 @@ const GenerateRandomWords = ({ onType }: props) => {
     </>
   );
 };
-
 export default GenerateRandomWords;
