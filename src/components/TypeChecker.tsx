@@ -19,6 +19,8 @@ const TypeChecker = ({
   const [inputValue, setInputValue] = useState("");
 
   const handleOnInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onActiveWordIndex(activeWordIndex);
+    onActiveLetterIndex(activeLetterIndex);
     const { value } = event.target;
     if (
       wordList[activeWordIndex].length - 1 === activeLetterIndex &&
@@ -40,8 +42,6 @@ const TypeChecker = ({
         onCorrectType(false);
       }
     }
-    onActiveLetterIndex(activeLetterIndex);
-    onActiveWordIndex(activeWordIndex);
   };
   return (
     <input
