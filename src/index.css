@@ -2,11 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-.passed,
-.active {
+.passed {
   color: blue;
 }
 
-.not-active {
+.not-active,
+.active {
   color: brown;
 }

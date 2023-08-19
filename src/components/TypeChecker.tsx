@@ -1,4 +1,4 @@
-import { Ref, RefObject, useState } from "react";
+import { Ref, RefObject, useEffect, useState } from "react";
 
 interface props {
   wordList: string[];
@@ -18,10 +18,13 @@ const TypeChecker = ({
   const [activeWordIndex, setActiveWordIndex] = useState(0);
   const [inputValue, setInputValue] = useState("");
 
-  const handleOnInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onActiveWordIndex(activeWordIndex);
+  useEffect(() => {
     onActiveLetterIndex(activeLetterIndex);
-    const { value } = event.target;
+    onActiveWordIndex(activeWordIndex);
+  }, [activeLetterIndex, activeWordIndex]);
+
+  const handleOnInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
     if (
       wordList[activeWordIndex].length - 1 === activeLetterIndex &&
       value === " "
@@ -32,7 +35,8 @@ const TypeChecker = ({
       onCorrectType(true);
     } else {
       if (value === wordList[activeWordIndex][activeLetterIndex]) {
-        setActiveLetterIndex(activeLetterIndex + 1);
+        setActiveLetterIndex((prev) => prev + 1);
+
         setInputValue("");
         console.log("correct");
         onCorrectType(true);

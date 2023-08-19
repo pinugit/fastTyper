@@ -67,11 +67,11 @@ const GenerateRandomWords = ({ onType }: props) => {
     wordIndex: number,
     letterIndex: number
   ) => {
-    if (activeLetterIndex === letterIndex && activeWordIndex == wordIndex) {
+    if (activeLetterIndex === letterIndex && activeWordIndex === wordIndex) {
       return "active";
     } else if (
       activeWordIndex > wordIndex ||
-      (activeWordIndex === wordIndex && activeLetterIndex >= letterIndex)
+      (activeWordIndex === wordIndex && activeLetterIndex > letterIndex)
     ) {
       return "passed";
     } else {
@@ -84,6 +84,7 @@ const GenerateRandomWords = ({ onType }: props) => {
       <div
         onClick={handleInputFocus}
         className="flex flex-wrap h-40 min-w-[10%] overflow-auto scroll-auto border-4"
+        id="theMainDiv"
       >
         {randomWordList.map((word, wordIndex) => (
           <div className="flex ml-1" key={wordIndex}>
@@ -113,7 +114,9 @@ const GenerateRandomWords = ({ onType }: props) => {
         onActiveWordIndex={(index) => {
           setActiveWordIndex(index);
         }}
-        onCorrectType={(isCorrect) => handleCorrectType(isCorrect)}
+        onCorrectType={(isCorrect) => {
+          handleCorrectType(isCorrect);
+        }}
       />
     </>
   );
