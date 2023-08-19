@@ -2,6 +2,7 @@ import { useState } from "react";
 import GenerateRandomWords from "./components/GenerateRandomWords";
 import Cursor from "./components/cursor";
 import { BsKeyboard } from "react-icons/bs";
+import SettingTopBar from "./components/SettingTopBar";
 
 interface Coordinates {
   x: number;
@@ -25,7 +26,7 @@ function App() {
         </div>
         <div className="flex flex-col mt-7">
           <div className="flex justify-center mb-36 ">
-            <div className="bg-primary-dark h-10 w-60 rounded-lg"></div>
+            <SettingTopBar />
           </div>
           <GenerateRandomWords
             onType={(coordinates) => handleCoordinates(coordinates)}
