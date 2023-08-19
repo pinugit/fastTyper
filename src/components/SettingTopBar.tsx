@@ -1,5 +1,29 @@
+import { useState } from "react";
+import TimeMode from "./TimeMode";
+import TypingModes from "./TypingModes";
+
 const SettingTopBar = () => {
-  return <div>SettingTopBar</div>;
+  const [currentMode, setCurrentMode] = useState("time");
+  const handleModeChange = (mode: string) => {
+    setCurrentMode(mode);
+    console.log(currentMode);
+  };
+  return (
+    <div className="flex bg-primary-dark rounded-xl p-1 align-middle">
+      <div className="bg-primary h-6 w-1 m-1 rounded-sm"></div>
+      <TypingModes onModeChange={(mode) => handleModeChange(mode)} />
+      <div className="bg-primary h-6 w-1 m-1 rounded-sm"></div>
+      {currentMode === "time" ? (
+        <TimeMode />
+      ) : currentMode === "word" ? (
+        <div>word mode</div>
+      ) : currentMode === "quote" ? (
+        <div>quote mode</div>
+      ) : currentMode === "zen" ? (
+        <div>zen</div>
+      ) : null}
+    </div>
+  );
 };
 
 export default SettingTopBar;
