@@ -14,7 +14,7 @@ const Cursor: React.FC<CursorProps> = ({ x, y }) => {
 
   return (
     <div
-      className="absolute bg-black w-[2px] h-7 transition-all duration-200"
+      className="absolute bg-gruv-light-yello w-[3px] h-8 transition-all duration-200"
       style={{ transform: `translate(${position.x}px, ${position.y}px)` }}
     />
   );

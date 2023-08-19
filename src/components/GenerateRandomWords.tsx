@@ -83,11 +83,11 @@ const GenerateRandomWords = ({ onType }: props) => {
     <>
       <div
         onClick={handleInputFocus}
-        className="flex flex-wrap h-40 min-w-[10%] overflow-auto scroll-auto border-4"
+        className="flex flex-wrap h-28 overflow-auto scroll-auto text-2xl"
         id="theMainDiv"
       >
         {randomWordList.map((word, wordIndex) => (
-          <div className="flex ml-1" key={wordIndex}>
+          <div className="flex m-[0.3rem]" key={wordIndex}>
             {word.split("").map((letter, letterIndex) => (
               <p
                 ref={addToRefs}

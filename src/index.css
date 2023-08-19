@@ -2,11 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-.passed {
-  color: blue;
-}
+@layer base {
+  * {
+    @apply bg-primary;
+  }
+  .passed {
+    @apply text-gruv-light-yello;
+  }
 
-.not-active,
-.active {
-  color: brown;
+  .not-active,
+  .active {
+    @apply text-primary-2;
+  }
 }
