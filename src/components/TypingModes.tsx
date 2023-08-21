@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaClock, FaMountain } from "react-icons/fa";
 import { VscWholeWord } from "react-icons/vsc";
 import { BiSolidQuoteLeft } from "react-icons/bi";
