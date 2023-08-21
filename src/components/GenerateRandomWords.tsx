@@ -18,7 +18,7 @@ interface props {
 }
 
 const GenerateRandomWords = ({ onType }: props) => {
-  const [randomListLength, setRandomListLength] = useState(100);
+  const [randomListLength, setRandomListLength] = useState(30);
   const [randomWordList, setRandomWordList] = useState(
     getRandomWordList(commonWords, randomListLength)
   );
@@ -57,52 +57,11 @@ const GenerateRandomWords = ({ onType }: props) => {
   }, []);
 
   useEffect(() => {
-    //found the width of the main container
-    const mainDiv = document.getElementById("theMainDiv");
-    const mainDivWidth = mainDiv ? mainDiv?.clientWidth : 0;
-    console.log(mainDivWidth);
-    const wordDivWidth = WordRefs.current.map(
-      (wordRef) => wordRef.getBoundingClientRect().width + 4.8
-    );
-    console.log(wordDivWidth);
-
-    let currentLineWordLengthTotal = 0;
-    let lineIndex = 0;
-    let noOfWords = 0;
-    wordDivWidth.map((currentWordWidth) => {
-      if (currentLineWordLengthTotal < mainDivWidth) {
-        currentLineWordLengthTotal += currentWordWidth;
-        noOfWords += 1;
-        if (currentLineWordLengthTotal > mainDivWidth) {
-          //if this condition becomes true means the line is completed
-          currentLineWordLengthTotal -= currentWordWidth; // margin for the words;
-          setLinesInfo((prev) => [
-            ...prev,
-            { lineIndex: lineIndex, noOfWords: noOfWords },
-          ]);
-          console.log(
-            "lineLength : " +
-              currentLineWordLengthTotal +
-              "lineIndex : " +
-              lineIndex +
-              "index : " +
-              noOfWords
-          );
-          noOfWords = 0;
-          currentLineWordLengthTotal = 0;
-          lineIndex += 1;
-        }
-      }
-    });
-    console.log(linesInfo);
-  }, []);
-
-  useEffect(() => {
     const activeElement = pRefs.current.find((p) => p.className === "active");
     const scrollElementIntoView = () => {
       if (activeElement) {
         activeElement.scrollIntoView({
-          behavior: "auto",
+          behavior: "instant",
           block: "center",
           inline: "center",
         });
@@ -111,15 +70,56 @@ const GenerateRandomWords = ({ onType }: props) => {
     requestAnimationFrame(scrollElementIntoView);
   }, [activeWordIndex, activeLetterIndex]);
 
+  useEffect(() => {
+    //found the width of the main container
+    const mainDiv = document.getElementById("theMainDiv");
+    const mainDivWidth = mainDiv ? mainDiv?.clientWidth : 0;
+    const wordDivWidth = WordRefs.current.map(
+      (wordRef) => wordRef.getBoundingClientRect().width + 9.6
+    );
+
+    let currentLineWordLengthTotal = 0;
+    let lineIndex = 0;
+    let noOfWords = 0;
+    const newLinesInfo = []; // Create a new array to update lines information
+
+    wordDivWidth.forEach((currentWordWidth) => {
+      if (currentLineWordLengthTotal + currentWordWidth <= mainDivWidth) {
+        currentLineWordLengthTotal += currentWordWidth;
+        noOfWords += 1;
+      } else {
+        // Line is completed
+        newLinesInfo.push({ lineIndex, noOfWords });
+        noOfWords = 1;
+        currentLineWordLengthTotal = currentWordWidth;
+        lineIndex += 1;
+      }
+    });
+
+    // Don't forget to add the last line's information
+    if (noOfWords > 0) {
+      newLinesInfo.push({ lineIndex, noOfWords });
+    }
+
+    setLinesInfo(newLinesInfo); // Update the lines information
+  }, [randomWordList]);
+
   const handleCorrectType = (isCorrect: boolean) => {
     const updatedCoordinateList = pRefs.current.map((p) =>
       p.getBoundingClientRect()
     );
     setCoordinateList(updatedCoordinateList);
+
+    let yValue = 0;
+    if (linesInfo[0].noOfWords + linesInfo[1].noOfWords - 2 < activeWordIndex) {
+      yValue = updatedCoordinateList[linesInfo[1].noOfWords].top;
+    } else {
+      yValue = updatedCoordinateList[count].top;
+    }
     if (isCorrect) {
       onType({
-        x: updatedCoordinateList[count].left,
-        y: updatedCoordinateList[count].top,
+        x: updatedCoordinateList[count]?.left,
+        y: yValue,
       });
       setCount(count + 1);
     }
