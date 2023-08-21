@@ -49,6 +49,7 @@ const TypeChecker = ({
   };
   return (
     <input
+      className="absolute top-[-999px]"
       ref={inputRef}
       type="text"
       value={inputValue}

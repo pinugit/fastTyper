@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-const TimeMode = () => {
-  const timeModes = [15, 30, 60, 120];
+const WordMode = () => {
+  const timeModes = [10, 25, 50, 100];
   const [activeTimeMode, setActiveTimeMode] = useState(timeModes[0]);
   return (
     <div className="flex align-middle ">
@@ -20,4 +20,4 @@ const TimeMode = () => {
   );
 };
 
-export default TimeMode;
+export default WordMode;

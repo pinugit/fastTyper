@@ -1,6 +1,7 @@
 import { useState } from "react";
 import TimeMode from "./TimeMode";
 import TypingModes from "./TypingModes";
+import WordMode from "./WordMode";
 
 const SettingTopBar = () => {
   const [currentMode, setCurrentMode] = useState("time");
@@ -16,7 +17,7 @@ const SettingTopBar = () => {
       {currentMode === "time" ? (
         <TimeMode />
       ) : currentMode === "word" ? (
-        <div>word mode</div>
+        <WordMode />
       ) : currentMode === "quote" ? (
         <div>quote mode</div>
       ) : currentMode === "zen" ? (
