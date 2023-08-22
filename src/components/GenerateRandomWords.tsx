@@ -221,7 +221,7 @@ const GenerateRandomWords = ({ onType }: props) => {
     <>
       <div
         onClick={handleInputFocus}
-        className="flex flex-wrap h-32 overflow-auto scroll-auto text-2xl snap-y snap-mandatory"
+        className="flex flex-wrap h-32 overflow-auto text-2xl snap-y snap-mandatory"
         id="theMainDiv"
       >
         {randomWordList.map((word, wordIndex) => (
