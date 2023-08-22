@@ -21,7 +21,7 @@ interface props {
 }
 
 const GenerateRandomWords = ({ onType }: props) => {
-  const [randomListLength, setRandomListLength] = useState(30);
+  const [randomListLength, setRandomListLength] = useState(50);
   const [randomWordList, setRandomWordList] = useState(
     getRandomWordList(commonWords, randomListLength)
   );
@@ -126,7 +126,6 @@ const GenerateRandomWords = ({ onType }: props) => {
   useEffect(() => {
     const indexForThePElement =
       linesInfo[0]?.noOfWords + linesInfo[1]?.noOfWords - 3;
-    console.log(wordInfo);
     console.log(indexForThePElement);
     let wordIndex = 0;
     for (let i = 0; i < indexForThePElement; i++) {
@@ -139,7 +138,7 @@ const GenerateRandomWords = ({ onType }: props) => {
 
   useEffect(() => {
     if (timesRun < 7) {
-      setInitialYValue(coordinateList[20]?.top);
+      setInitialYValue(coordinateList[wordIndexFromSecondLine]?.top);
       setTimeRun((prev) => prev + 1);
     }
   }, [count]);
@@ -154,7 +153,7 @@ const GenerateRandomWords = ({ onType }: props) => {
     let yValue = 0;
     let whichLine = 0;
     let currentWord = 0;
-
+    let lastLineIndex = linesInfo.length - 1;
     // Iterate through the linesInfo array to find the current line
     for (let i = 0; i < linesInfo.length; i++) {
       const wordsInLine = +linesInfo[i].noOfWords;
@@ -171,7 +170,15 @@ const GenerateRandomWords = ({ onType }: props) => {
       currentWord += wordsInLine; // Move to the next word
     }
 
-    yValue = whichLine > 1 ? initialYValue : updatedCoordinateList[count]?.top;
+    if (whichLine >= 1) {
+      if (whichLine === lastLineIndex) {
+        yValue = updatedCoordinateList[count]?.top;
+      } else {
+        yValue = initialYValue;
+      }
+    } else {
+      yValue = updatedCoordinateList[count]?.top;
+    }
 
     console.log("Current Line:", whichLine);
     console.log("initial y value", initialYValue);
