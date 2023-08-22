@@ -21,6 +21,10 @@ function App() {
   };
   const handleRefresh = () => {
     setRefreshClicked(true);
+    setTimeout(() => {
+      setRefreshClicked(false);
+    }, 100);
+    console.log("button clicked");
   };
   return (
     <>
