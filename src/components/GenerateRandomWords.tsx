@@ -21,7 +21,7 @@ interface props {
 }
 
 const GenerateRandomWords = ({ onType }: props) => {
-  const [randomListLength, setRandomListLength] = useState(50);
+  const [randomListLength, setRandomListLength] = useState(100);
   const [randomWordList, setRandomWordList] = useState(
     getRandomWordList(commonWords, randomListLength)
   );
@@ -39,6 +39,7 @@ const GenerateRandomWords = ({ onType }: props) => {
   const [wordIndexFromSecondLine, setWordIndexFromSecondLine] = useState(0);
   const [timesRun, setTimeRun] = useState(0);
   const [wordInfo, setWordInfo] = useState<itemsInEachWord[]>([]);
+  const numberOfDummyBlocks = randomListLength;
 
   const addToRefs = (element: HTMLParagraphElement) => {
     if (element && !pRefs.current.includes(element)) {
@@ -171,7 +172,7 @@ const GenerateRandomWords = ({ onType }: props) => {
     }
 
     if (whichLine >= 1) {
-      if (whichLine === lastLineIndex) {
+      if (whichLine >= lastLineIndex) {
         yValue = updatedCoordinateList[count]?.top;
       } else {
         yValue = initialYValue;
@@ -245,6 +246,15 @@ const GenerateRandomWords = ({ onType }: props) => {
                 {letter}
               </p>
             ))}
+          </div>
+        ))}
+        {/* Add dummy code blocks for scrolling the last line */}
+        {Array.from({ length: numberOfDummyBlocks }).map((_, index) => (
+          <div
+            className="flex m-[0.3rem] last-line dummy"
+            key={`dummy-${index}`}
+          >
+            <p>&nbsp;</p>
           </div>
         ))}
       </div>

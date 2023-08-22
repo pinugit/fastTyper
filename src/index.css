@@ -15,3 +15,14 @@
     @apply text-primary-2;
   }
 }
+/* Hide the scrollbar and prevent scrolling */
+#theMainDiv {
+  overflow: hidden;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For IE and Edge */
+}
+
+/* Hide the scrollbar in Chrome/Safari */
+#theMainDiv::-webkit-scrollbar {
+  display: none;
+}
