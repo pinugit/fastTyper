@@ -18,10 +18,15 @@ interface linesInContainer {
 
 interface props {
   lengthRandomList: number;
+  isRefreshClicked: boolean;
   onType: (coordinates: coordinates) => void;
 }
 
-const GenerateRandomWords = ({ onType, lengthRandomList }: props) => {
+const GenerateRandomWords = ({
+  onType,
+  isRefreshClicked,
+  lengthRandomList,
+}: props) => {
   const [randomListLength, setRandomListLength] = useState(lengthRandomList);
   const [randomWordList, setRandomWordList] = useState(
     getRandomWordList(commonWords, randomListLength)
@@ -150,6 +155,12 @@ const GenerateRandomWords = ({ onType, lengthRandomList }: props) => {
     console.log(lengthRandomList);
   }, [lengthRandomList]);
 
+  useEffect(() => {
+    if (isRefreshClicked) {
+      setRandomWordList(getRandomWordList(commonWords, lengthRandomList));
+      console.log(isRefreshClicked);
+    }
+  }, [isRefreshClicked]);
   const handleCorrectType = (isCorrect: boolean) => {
     const updatedCoordinateList = pRefs.current.map((p) =>
       p.getBoundingClientRect()

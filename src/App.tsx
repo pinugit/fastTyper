@@ -3,6 +3,7 @@ import GenerateRandomWords from "./components/GenerateRandomWords";
 import Cursor from "./components/cursor";
 import { BsKeyboard } from "react-icons/bs";
 import SettingTopBar from "./components/SettingTopBar";
+import RefreshButton from "./components/RefreshButton";
 
 interface Coordinates {
   x: number;
@@ -10,12 +11,16 @@ interface Coordinates {
 }
 function App() {
   const [coordinates, setCoordinated] = useState<Coordinates>();
+  const [isRefreshClicked, setRefreshClicked] = useState(false);
   const handleCoordinates = (coordinates: Coordinates) => {
     setCoordinated(coordinates);
   };
   const [paraLength, setParaLength] = useState(15);
   const handleWordModeChange = (mode: number) => {
     setParaLength(mode);
+  };
+  const handleRefresh = () => {
+    setRefreshClicked(true);
   };
   return (
     <>
@@ -37,7 +42,11 @@ function App() {
           <GenerateRandomWords
             onType={(coordinates) => handleCoordinates(coordinates)}
             lengthRandomList={paraLength}
+            isRefreshClicked={isRefreshClicked}
           />
+        </div>
+        <div className="h-5 flex justify-center align-middle">
+          <RefreshButton onRefresh={() => handleRefresh()} />
         </div>
       </div>
     </>
