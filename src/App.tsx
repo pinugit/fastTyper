@@ -13,6 +13,10 @@ function App() {
   const handleCoordinates = (coordinates: Coordinates) => {
     setCoordinated(coordinates);
   };
+  const [paraLength, setParaLength] = useState(15);
+  const handleWordModeChange = (mode: number) => {
+    setParaLength(mode);
+  };
   return (
     <>
       <Cursor
@@ -26,10 +30,13 @@ function App() {
         </div>
         <div className="flex flex-col mt-7">
           <div className="flex justify-center mb-36 ">
-            <SettingTopBar />
+            <SettingTopBar
+              onWordModeChange={(mode) => handleWordModeChange(mode)}
+            />
           </div>
           <GenerateRandomWords
             onType={(coordinates) => handleCoordinates(coordinates)}
+            lengthRandomList={paraLength}
           />
         </div>
       </div>
