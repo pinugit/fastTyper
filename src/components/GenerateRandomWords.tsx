@@ -7,7 +7,10 @@ interface coordinates {
   x: number;
   y: number;
 }
-
+interface itemsInEachWord {
+  wordIndex: number;
+  noOfItems: number;
+}
 interface linesInContainer {
   lineIndex: number;
   noOfWords: number;
@@ -32,6 +35,10 @@ const GenerateRandomWords = ({ onType }: props) => {
   pRefs.current = [];
   const WordRefs = useRef<HTMLDivElement[]>([]);
   WordRefs.current = [];
+  const [initialYValue, setInitialYValue] = useState(0);
+  const [wordIndexFromSecondLine, setWordIndexFromSecondLine] = useState(0);
+  const [timesRun, setTimeRun] = useState(0);
+  const [wordInfo, setWordInfo] = useState<itemsInEachWord[]>([]);
 
   const addToRefs = (element: HTMLParagraphElement) => {
     if (element && !pRefs.current.includes(element)) {
@@ -82,7 +89,6 @@ const GenerateRandomWords = ({ onType }: props) => {
     let lineIndex = 0;
     let noOfWords = 0;
     const newLinesInfo = []; // Create a new array to update lines information
-
     wordDivWidth.forEach((currentWordWidth) => {
       if (currentLineWordLengthTotal + currentWordWidth <= mainDivWidth) {
         currentLineWordLengthTotal += currentWordWidth;
@@ -102,7 +108,41 @@ const GenerateRandomWords = ({ onType }: props) => {
     }
 
     setLinesInfo(newLinesInfo); // Update the lines information
-  }, [randomWordList]);
+  }, []);
+
+  useEffect(() => {
+    let noOfPElement = 0;
+    const newWordInfo: itemsInEachWord[] = [];
+
+    WordRefs.current.forEach((word, whichWord) => {
+      const pElements = word.querySelectorAll("p");
+      noOfPElement = pElements.length;
+      newWordInfo.push({ wordIndex: whichWord, noOfItems: noOfPElement });
+    });
+
+    setWordInfo(newWordInfo);
+  }, []);
+
+  useEffect(() => {
+    const indexForThePElement =
+      linesInfo[0]?.noOfWords + linesInfo[1]?.noOfWords - 3;
+    console.log(wordInfo);
+    console.log(indexForThePElement);
+    let wordIndex = 0;
+    for (let i = 0; i < indexForThePElement; i++) {
+      wordIndex += wordInfo[i].noOfItems;
+    }
+    console.log(wordIndex);
+
+    setWordIndexFromSecondLine(wordIndex);
+  }, [linesInfo, wordInfo]);
+
+  useEffect(() => {
+    if (timesRun < 7) {
+      setInitialYValue(coordinateList[20]?.top);
+      setTimeRun((prev) => prev + 1);
+    }
+  }, [count]);
 
   const handleCorrectType = (isCorrect: boolean) => {
     const updatedCoordinateList = pRefs.current.map((p) =>
@@ -110,12 +150,33 @@ const GenerateRandomWords = ({ onType }: props) => {
     );
     setCoordinateList(updatedCoordinateList);
 
+    // Initialize variables to keep track of the current line and word
     let yValue = 0;
-    if (linesInfo[0].noOfWords + linesInfo[1].noOfWords - 2 < activeWordIndex) {
-      yValue = updatedCoordinateList[linesInfo[1].noOfWords].top;
-    } else {
-      yValue = updatedCoordinateList[count].top;
+    let whichLine = 0;
+    let currentWord = 0;
+
+    // Iterate through the linesInfo array to find the current line
+    for (let i = 0; i < linesInfo.length; i++) {
+      const wordsInLine = +linesInfo[i].noOfWords;
+
+      // Check if the active word index is within the current line
+      if (
+        activeWordIndex >= currentWord &&
+        activeWordIndex < currentWord + wordsInLine
+      ) {
+        whichLine = i; // Set the current line
+        break; // No need to continue searching
+      }
+
+      currentWord += wordsInLine; // Move to the next word
     }
+
+    yValue = whichLine > 1 ? initialYValue : updatedCoordinateList[count]?.top;
+
+    console.log("Current Line:", whichLine);
+    console.log("initial y value", initialYValue);
+    console.log("wordIndexFromSecond LIne ", wordIndexFromSecondLine);
+
     if (isCorrect) {
       onType({
         x: updatedCoordinateList[count]?.left,
