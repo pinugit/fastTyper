@@ -152,15 +152,27 @@ const GenerateRandomWords = ({
   useEffect(() => {
     setRandomListLength(lengthRandomList);
     setRandomWordList(getRandomWordList(commonWords, lengthRandomList));
+    handleRefresh();
     console.log(lengthRandomList);
   }, [lengthRandomList]);
 
   useEffect(() => {
     if (isRefreshClicked) {
       setRandomWordList(getRandomWordList(commonWords, lengthRandomList));
-      console.log(isRefreshClicked);
+      handleRefresh();
+      handleCoordinateReset();
     }
   }, [isRefreshClicked]);
+
+  const handleRefresh = () => {
+    setActiveLetterIndex(0);
+    setActiveWordIndex(0);
+  };
+
+  const handleCoordinateReset = () => {
+    onType({ x: coordinateList[0]?.left, y: coordinateList[0]?.top });
+  };
+
   const handleCorrectType = (isCorrect: boolean) => {
     const updatedCoordinateList = pRefs.current.map((p) =>
       p.getBoundingClientRect()

@@ -49,7 +49,7 @@ function App() {
             isRefreshClicked={isRefreshClicked}
           />
         </div>
-        <div className="h-5 flex justify-center align-middle">
+        <div className="h-5 flex justify-center align-middle mt-10">
           <RefreshButton onRefresh={() => handleRefresh()} />
         </div>
       </div>
