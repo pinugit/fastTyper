@@ -14,12 +14,16 @@ const Cursor: React.FC<CursorProps> = ({ x, y }) => {
   }, [x, y]);
 
   useEffect(() => {
+    hideCursorAtAppStart;
+  }, []);
+
+  const hideCursorAtAppStart = () => {
     if (x === 0 && y === 0) {
       setTimeout(() => {
         setHidden(false);
       }, 200);
     }
-  }, []);
+  };
 
   return (
     <div
