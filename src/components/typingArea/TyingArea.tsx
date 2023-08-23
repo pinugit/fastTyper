@@ -33,7 +33,7 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
   const [activeLetterIndex, setActiveLetterIndex] = useState(0);
   const [coordinateList, setCoordinateList] = useState<DOMRect[]>([]);
   const [count, setCount] = useState(1);
-  // const [linesInfo, setLinesInfo] = useState<linesInContainer[]>([]); // State for lines information
+  const [linesInfo, setLinesInfo] = useState<linesInContainer[]>([]); // State for lines information
   const inputFocusRef = useRef<HTMLInputElement>(null);
   const pRefs = useRef<HTMLParagraphElement[]>([]);
   pRefs.current = [];
@@ -42,13 +42,12 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
   const [initialYValue, setInitialYValue] = useState(0);
   const [wordIndexFromSecondLine, setWordIndexFromSecondLine] = useState(0);
   const [timesRun, setTimeRun] = useState(0);
-  // const [wordInfo, setWordInfo] = useState<itemsInEachWord[]>([]);
-
-  const linesInfo = useRef<linesInContainer[]>([]);
-  const wordInfo = useRef<itemsInEachWord[]>([]);
+  const [wordInfo, setWordInfo] = useState<itemsInEachWord[]>([]);
 
   useEffect(() => {
     calculateInitialCoordinateList();
+    calculateLineInfoState();
+    calculateWordInfoState();
   }, []);
 
   useEffect(() => {
@@ -72,8 +71,6 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
     if (coordinateList.length > 0) {
       handleCoordinateReset();
     }
-    calculateLineInfoState();
-    calculateWordInfoState();
   }, [lengthRandomList]);
 
   useEffect(() => {
@@ -85,11 +82,11 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
 
   const findAnElementIndexFromSecondLine = () => {
     const indexForThePElement =
-      linesInfo.current[0]?.noOfWords + linesInfo.current[1]?.noOfWords - 3;
+      linesInfo[0]?.noOfWords + linesInfo[1]?.noOfWords - 3;
     console.log(indexForThePElement);
     let wordIndex = 0;
     for (let i = 0; i < indexForThePElement; i++) {
-      wordIndex += wordInfo.current[i]?.noOfItems;
+      wordIndex += wordInfo[i]?.noOfItems;
     }
     console.log(wordIndex);
 
@@ -106,7 +103,7 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
       newWordInfo.push({ wordIndex: whichWord, noOfItems: noOfPElement });
     });
 
-    wordInfo.current = newWordInfo;
+    setWordInfo(newWordInfo);
   };
 
   const calculateLineInfoState = () => {
@@ -139,8 +136,42 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
       newLinesInfo.push({ lineIndex, noOfWords });
     }
 
-    linesInfo.current = newLinesInfo; // Update the lines information
+    setLinesInfo(newLinesInfo); // Update the lines information
   };
+
+  const calculateLineInfoStateReturner = () => {
+    //found the width of the main container
+    const mainDiv = document.getElementById("theMainDiv");
+    const mainDivWidth = mainDiv ? mainDiv?.clientWidth : 0;
+    const wordDivWidth = WordRefs.current.map(
+      (wordRef) => wordRef.getBoundingClientRect().width + 9.6
+    );
+
+    let currentLineWordLengthTotal = 0;
+    let lineIndex = 0;
+    let noOfWords = 0;
+    const newLinesInfo = []; // Create a new array to update lines information
+    wordDivWidth.forEach((currentWordWidth) => {
+      if (currentLineWordLengthTotal + currentWordWidth <= mainDivWidth) {
+        currentLineWordLengthTotal += currentWordWidth;
+        noOfWords += 1;
+      } else {
+        // Line is completed
+        newLinesInfo.push({ lineIndex, noOfWords });
+        noOfWords = 1;
+        currentLineWordLengthTotal = currentWordWidth;
+        lineIndex += 1;
+      }
+    });
+
+    // Don't forget to add the last line's information
+    if (noOfWords > 0) {
+      newLinesInfo.push({ lineIndex, noOfWords });
+    }
+
+    return newLinesInfo;
+  };
+
   const scrollActiveWordIntoView = () => {
     const activeElement = pRefs.current.find((p) => p.className === "active");
     const scrollElementIntoView = () => {
@@ -193,17 +224,19 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
     updatedCoordinateList: DOMRect[]
   ) => {
     // Initialize variables to keep track of the current line and word
+    const linesInfoDirect = calculateLineInfoStateReturner();
+    let yValue = 0;
     let whichLine = 0;
     let currentWord = 0;
-    let wordsInLine = 0;
-    // Iterate through the linesInfo array to find the current line
-    for (let i = 0; i < linesInfo.current.length; i++) {
-      wordsInLine += linesInfo.current[i].noOfWords;
+    let lastLineIndex = linesInfoDirect.length - 1;
+    // Iterate through the linesInfoDirect array to find the current line
+    for (let i = 0; i < linesInfoDirect.length; i++) {
+      const wordsInLine = +linesInfoDirect[i].noOfWords;
 
       // Check if the active word index is within the current line
       if (
         activeWordIndex >= currentWord &&
-        activeWordIndex < currentWord + wordsInLine - 1
+        activeWordIndex < currentWord + wordsInLine
       ) {
         whichLine = i; // Set the current line
         break; // No need to continue searching
@@ -211,17 +244,19 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
 
       currentWord += wordsInLine; // Move to the next word
     }
-    console.log("which line i am on", whichLine);
-    console.log("initial y value", initialYValue);
-    console.log("active word INdex", activeWordIndex);
-    console.log(linesInfo);
+
+    console.log(linesInfoDirect);
 
     if (whichLine >= 1) {
-      console.log("entering if");
-      return initialYValue;
+      if (whichLine >= lastLineIndex) {
+        yValue = updatedCoordinateList[count]?.top;
+      } else {
+        yValue = initialYValue;
+      }
     } else {
-      return updatedCoordinateList[count]?.top;
+      yValue = updatedCoordinateList[count]?.top;
     }
+    return yValue;
   };
 
   const handleCorrectType = (isCorrect: boolean) => {
@@ -231,7 +266,6 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
     setCoordinateList(updatedCoordinateList);
 
     const yValue = calculateYValueBasedOnLineNumber(updatedCoordinateList);
-    console.log("the y value ", yValue);
 
     if (isCorrect) {
       onType({
