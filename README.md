@@ -1,27 +1,35 @@
-# React + TypeScript + Vite
+# This is a clone of MonkeyType.com made in react
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![typescript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 
-Currently, two official plugins are available:
+## About 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+fastTyper is a clone of a famous typing website called monkeytype(which i use regularly), so i decided to make my first project clone of monkeytype. this app is made with react, typescript and tailwindcss. 
 
-## Expanding the ESLint configuration
+any contribution or improvements are encouraged and appreciated, i want to implement the main typing typing mechanism of of typing as closely as possible
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## What have I already made 🔥
 
-- Configure the top-level `parserOptions` property like this:
+  - The basic structure of the home page is implemented
+  - Typing is working (but backspace and any other shortcut don't work)
+  - The paragraph length selector is working 
+  - The top bar is somewhat working
+  - For now these are the only things that are working 😭
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+ ## What i am currently working on
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+ - Making the typing area fully functional
+ - Make the mode selector working perfectly
+ - Thinking of making a docker image so that i can easily share the dev environment
+
+## Credits
+
+- Me (obviously😎)
+- Anyone who is happy to contribute 👍
+
+## Thanks for reading 👍🔥🙌
+
+![funny skeleton typing](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExam52aTU1NW1odGpiaDR1YWcwM2Z2ZGV5ajE1ajc2amR2ZXN0YXlscyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ThrM4jEi2lBxd7X2yz/giphy.gif)
+
+
