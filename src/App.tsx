@@ -1,9 +1,10 @@
 import { useState } from "react";
-import GenerateRandomWords from "./components/GenerateRandomWords";
+import GenerateRandomWords from "./components/typingArea/TyingArea";
 import Cursor from "./components/cursor";
 import { BsKeyboard } from "react-icons/bs";
 import SettingTopBar from "./components/SettingTopBar";
 import RefreshButton from "./components/RefreshButton";
+import TypingArea from "./components/typingArea/TyingArea";
 
 interface Coordinates {
   x: number;
@@ -43,7 +44,7 @@ function App() {
               onWordModeChange={(mode) => handleWordModeChange(mode)}
             />
           </div>
-          <GenerateRandomWords
+          <TypingArea
             onType={(coordinates) => handleCoordinates(coordinates)}
             lengthRandomList={paraLength}
             isRefreshClicked={isRefreshClicked}

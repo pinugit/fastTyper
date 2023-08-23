@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import commonWords from "./randomWordLIst";
-import getRandomWordList from "./getRandomWords";
-import TypeChecker from "./TypeChecker";
+import commonWords from "../randomWordLIst";
+import getRandomWordList from "../getRandomWords";
+import TypeChecker from "../TypeChecker";
+import WordDivElementRederer from "./WordDivElementRederer";
+import DummyDivElementRenderer from "./DummyDivElementRenderer";
 
 interface coordinates {
   x: number;
@@ -22,11 +24,7 @@ interface props {
   onType: (coordinates: coordinates) => void;
 }
 
-const GenerateRandomWords = ({
-  onType,
-  isRefreshClicked,
-  lengthRandomList,
-}: props) => {
+const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
   const [randomListLength, setRandomListLength] = useState(lengthRandomList);
   const [randomWordList, setRandomWordList] = useState(
     getRandomWordList(commonWords, randomListLength)
@@ -45,45 +43,70 @@ const GenerateRandomWords = ({
   const [wordIndexFromSecondLine, setWordIndexFromSecondLine] = useState(0);
   const [timesRun, setTimeRun] = useState(0);
   const [wordInfo, setWordInfo] = useState<itemsInEachWord[]>([]);
-  const numberOfDummyBlocks = randomListLength;
 
-  const addToRefs = (element: HTMLParagraphElement) => {
-    if (element && !pRefs.current.includes(element)) {
-      pRefs.current.push(element);
-    }
-  };
-
-  const addToWordRefs = (element: HTMLDivElement) => {
-    if (element && !WordRefs.current.includes(element)) {
-      WordRefs.current.push(element);
-    }
-  };
   useEffect(() => {
-    pRefs.current.forEach((p) => {
-      const rect = p.getBoundingClientRect();
-      if (p === pRefs.current[0]) {
-        onType({ x: rect.left, y: rect.top });
-      }
-
-      setCoordinateList((prev) => [...prev, rect]);
-    });
+    calculateInitialCoordinateList();
+    calculateLineInfoState();
+    calculateWordInfoState();
   }, []);
 
   useEffect(() => {
-    const activeElement = pRefs.current.find((p) => p.className === "active");
-    const scrollElementIntoView = () => {
-      if (activeElement) {
-        activeElement.scrollIntoView({
-          behavior: "instant",
-          block: "center",
-          inline: "center",
-        });
-      }
-    };
-    requestAnimationFrame(scrollElementIntoView);
+    scrollActiveWordIntoView();
   }, [activeWordIndex, activeLetterIndex]);
 
   useEffect(() => {
+    findAnElementIndexFromSecondLine();
+  }, [linesInfo, wordInfo]);
+
+  useEffect(() => {
+    if (timesRun < 7) {
+      setInitialYValue(coordinateList[wordIndexFromSecondLine]?.top);
+      setTimeRun((prev) => prev + 1);
+    }
+  }, [count]);
+
+  useEffect(() => {
+    setRandomListLength(lengthRandomList);
+    handleRefresh();
+    if (coordinateList.length > 0) {
+      handleCoordinateReset();
+    }
+  }, [lengthRandomList]);
+
+  useEffect(() => {
+    if (isRefreshClicked) {
+      handleRefresh();
+      handleCoordinateReset();
+    }
+  }, [isRefreshClicked]);
+
+  const findAnElementIndexFromSecondLine = () => {
+    const indexForThePElement =
+      linesInfo[0]?.noOfWords + linesInfo[1]?.noOfWords - 3;
+    console.log(indexForThePElement);
+    let wordIndex = 0;
+    for (let i = 0; i < indexForThePElement; i++) {
+      wordIndex += wordInfo[i]?.noOfItems;
+    }
+    console.log(wordIndex);
+
+    setWordIndexFromSecondLine(wordIndex);
+  };
+
+  const calculateWordInfoState = () => {
+    let noOfPElement = 0;
+    const newWordInfo: itemsInEachWord[] = [];
+
+    WordRefs.current.forEach((word, whichWord) => {
+      const pElements = word.querySelectorAll("p");
+      noOfPElement = pElements.length;
+      newWordInfo.push({ wordIndex: whichWord, noOfItems: noOfPElement });
+    });
+
+    setWordInfo(newWordInfo);
+  };
+
+  const calculateLineInfoState = () => {
     //found the width of the main container
     const mainDiv = document.getElementById("theMainDiv");
     const mainDivWidth = mainDiv ? mainDiv?.clientWidth : 0;
@@ -114,75 +137,57 @@ const GenerateRandomWords = ({
     }
 
     setLinesInfo(newLinesInfo); // Update the lines information
-  }, []);
+  };
+  const scrollActiveWordIntoView = () => {
+    const activeElement = pRefs.current.find((p) => p.className === "active");
+    const scrollElementIntoView = () => {
+      if (activeElement) {
+        activeElement.scrollIntoView({
+          behavior: "instant",
+          block: "center",
+          inline: "center",
+        });
+      }
+    };
+    requestAnimationFrame(scrollElementIntoView);
+  };
 
-  useEffect(() => {
-    let noOfPElement = 0;
-    const newWordInfo: itemsInEachWord[] = [];
+  const calculateInitialCoordinateList = () => {
+    pRefs.current.forEach((p) => {
+      const rect = p.getBoundingClientRect();
+      if (p === pRefs.current[0]) {
+        onType({ x: rect.left, y: rect.top });
+      }
 
-    WordRefs.current.forEach((word, whichWord) => {
-      const pElements = word.querySelectorAll("p");
-      noOfPElement = pElements.length;
-      newWordInfo.push({ wordIndex: whichWord, noOfItems: noOfPElement });
+      setCoordinateList((prev) => [...prev, rect]);
     });
+  };
 
-    setWordInfo(newWordInfo);
-  }, []);
-
-  useEffect(() => {
-    const indexForThePElement =
-      linesInfo[0]?.noOfWords + linesInfo[1]?.noOfWords - 3;
-    console.log(indexForThePElement);
-    let wordIndex = 0;
-    for (let i = 0; i < indexForThePElement; i++) {
-      wordIndex += wordInfo[i].noOfItems;
+  const addToRefs = (element: HTMLParagraphElement) => {
+    if (element && !pRefs.current.includes(element)) {
+      pRefs.current.push(element);
     }
-    console.log(wordIndex);
+  };
 
-    setWordIndexFromSecondLine(wordIndex);
-  }, [linesInfo, wordInfo]);
-
-  useEffect(() => {
-    if (timesRun < 7) {
-      setInitialYValue(coordinateList[wordIndexFromSecondLine]?.top);
-      setTimeRun((prev) => prev + 1);
+  const addToWordRefs = (element: HTMLDivElement) => {
+    if (element && !WordRefs.current.includes(element)) {
+      WordRefs.current.push(element);
     }
-  }, [count]);
-
-  useEffect(() => {
-    setRandomListLength(lengthRandomList);
-    setRandomWordList(getRandomWordList(commonWords, lengthRandomList));
-    handleRefresh();
-    if (coordinateList.length > 0) {
-      handleCoordinateReset();
-    }
-    console.log(lengthRandomList);
-  }, [lengthRandomList]);
-
-  useEffect(() => {
-    if (isRefreshClicked) {
-      setRandomWordList(getRandomWordList(commonWords, lengthRandomList));
-      handleRefresh();
-      handleCoordinateReset();
-    }
-  }, [isRefreshClicked]);
+  };
 
   const handleRefresh = () => {
+    setRandomWordList(getRandomWordList(commonWords, lengthRandomList));
     setActiveLetterIndex(0);
     setActiveWordIndex(0);
-    setCount(1);
   };
 
   const handleCoordinateReset = () => {
     onType({ x: coordinateList[0]?.left, y: coordinateList[0]?.top });
   };
 
-  const handleCorrectType = (isCorrect: boolean) => {
-    const updatedCoordinateList = pRefs.current.map((p) =>
-      p.getBoundingClientRect()
-    );
-    setCoordinateList(updatedCoordinateList);
-
+  const calculateYValueBasedOnLineNumber = (
+    updatedCoordinateList: DOMRect[]
+  ) => {
     // Initialize variables to keep track of the current line and word
     let yValue = 0;
     let whichLine = 0;
@@ -213,6 +218,15 @@ const GenerateRandomWords = ({
     } else {
       yValue = updatedCoordinateList[count]?.top;
     }
+    return yValue;
+  };
+
+  const handleCorrectType = (isCorrect: boolean) => {
+    const updatedCoordinateList = pRefs.current.map((p) =>
+      p.getBoundingClientRect()
+    );
+    setCoordinateList(updatedCoordinateList);
+    const yValue = calculateYValueBasedOnLineNumber(updatedCoordinateList);
 
     if (isCorrect) {
       onType({
@@ -229,24 +243,6 @@ const GenerateRandomWords = ({
     }
   };
 
-  const getParagraphClassName = (
-    activeLetterIndex: number,
-    activeWordIndex: number,
-    wordIndex: number,
-    letterIndex: number
-  ) => {
-    if (activeLetterIndex === letterIndex && activeWordIndex === wordIndex) {
-      return "active";
-    } else if (
-      activeWordIndex > wordIndex ||
-      (activeWordIndex === wordIndex && activeLetterIndex > letterIndex)
-    ) {
-      return "passed";
-    } else {
-      return "not-active";
-    }
-  };
-
   return (
     <>
       <div
@@ -254,38 +250,16 @@ const GenerateRandomWords = ({
         className="flex flex-wrap h-32 overflow-auto text-2xl snap-y snap-mandatory"
         id="theMainDiv"
       >
-        {randomWordList.map((word, wordIndex) => (
-          <div
-            id="wordContainer"
-            ref={addToWordRefs}
-            className="flex m-[0.3rem] snap-center"
-            key={wordIndex}
-          >
-            {word.split("").map((letter, letterIndex) => (
-              <p
-                ref={addToRefs}
-                className={getParagraphClassName(
-                  activeLetterIndex,
-                  activeWordIndex,
-                  wordIndex,
-                  letterIndex
-                )}
-                key={letterIndex}
-              >
-                {letter}
-              </p>
-            ))}
-          </div>
-        ))}
-        {/* Add dummy code blocks for scrolling the last line */}
-        {Array.from({ length: numberOfDummyBlocks }).map((_, index) => (
-          <div
-            className="flex m-[0.3rem] last-line dummy"
-            key={`dummy-${index}`}
-          >
-            <p>&nbsp;</p>
-          </div>
-        ))}
+        {
+          <WordDivElementRederer
+            randomWordList={randomWordList}
+            addToRefs={addToRefs}
+            addToWordRefs={addToWordRefs}
+            activeLetterIndex={activeLetterIndex}
+            activeWordIndex={activeWordIndex}
+          />
+        }
+        {<DummyDivElementRenderer randomListLength={randomListLength} />}
       </div>
       <TypeChecker
         inputRef={inputFocusRef}
@@ -306,4 +280,4 @@ const GenerateRandomWords = ({
   );
 };
 
-export default GenerateRandomWords;
+export default TypingArea;
