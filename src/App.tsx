@@ -1,5 +1,4 @@
 import { useState } from "react";
-import GenerateRandomWords from "./components/typingArea/TyingArea";
 import Cursor from "./components/cursor";
 import { BsKeyboard } from "react-icons/bs";
 import SettingTopBar from "./components/SettingTopBar";
