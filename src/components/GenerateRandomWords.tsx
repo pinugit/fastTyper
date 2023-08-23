@@ -153,6 +153,9 @@ const GenerateRandomWords = ({
     setRandomListLength(lengthRandomList);
     setRandomWordList(getRandomWordList(commonWords, lengthRandomList));
     handleRefresh();
+    if (coordinateList.length > 0) {
+      handleCoordinateReset();
+    }
     console.log(lengthRandomList);
   }, [lengthRandomList]);
 
