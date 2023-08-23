@@ -179,6 +179,7 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
     setRandomWordList(getRandomWordList(commonWords, lengthRandomList));
     setActiveLetterIndex(0);
     setActiveWordIndex(0);
+    setCount(1);
   };
 
   const handleCoordinateReset = () => {
@@ -226,6 +227,7 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
       p.getBoundingClientRect()
     );
     setCoordinateList(updatedCoordinateList);
+
     const yValue = calculateYValueBasedOnLineNumber(updatedCoordinateList);
 
     if (isCorrect) {
