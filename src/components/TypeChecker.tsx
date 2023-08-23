@@ -6,6 +6,8 @@ interface props {
   onActiveWordIndex: (index: number) => void;
   onCorrectType: (isCorrect: boolean) => void;
   inputRef: RefObject<HTMLInputElement>;
+  isRefreshClicked: boolean;
+  randomListChange: number;
 }
 const TypeChecker = ({
   wordList,
@@ -13,6 +15,8 @@ const TypeChecker = ({
   onActiveWordIndex,
   onCorrectType,
   inputRef,
+  isRefreshClicked,
+  randomListChange,
 }: props) => {
   const [activeLetterIndex, setActiveLetterIndex] = useState(0);
   const [activeWordIndex, setActiveWordIndex] = useState(0);
@@ -22,6 +26,19 @@ const TypeChecker = ({
     onActiveLetterIndex(activeLetterIndex);
     onActiveWordIndex(activeWordIndex);
   }, [activeLetterIndex, activeWordIndex]);
+
+  useEffect(() => {
+    if (isRefreshClicked) {
+      setActiveLetterIndex(0);
+      setActiveWordIndex(0);
+      setInputValue("");
+    }
+  }, [isRefreshClicked]);
+
+  useEffect(() => {
+    setActiveLetterIndex(0);
+    setActiveWordIndex(0);
+  }, [randomListChange]);
 
   const handleOnInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;

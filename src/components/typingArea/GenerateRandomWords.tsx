@@ -170,7 +170,6 @@ const GenerateRandomWords = ({
   const handleRefresh = () => {
     setActiveLetterIndex(0);
     setActiveWordIndex(0);
-    setCount(1);
   };
 
   const handleCoordinateReset = () => {
@@ -213,6 +212,10 @@ const GenerateRandomWords = ({
     } else {
       yValue = updatedCoordinateList[count]?.top;
     }
+
+    console.log("Current Line:", whichLine);
+    console.log("initial y value", initialYValue);
+    console.log("wordIndexFromSecond LIne ", wordIndexFromSecondLine);
 
     if (isCorrect) {
       onType({
@@ -261,7 +264,7 @@ const GenerateRandomWords = ({
             className="flex m-[0.3rem] snap-center"
             key={wordIndex}
           >
-            {word.split("").map((letter, letterIndex) => (
+            {/* {word.split("").map((letter, letterIndex) => (
               <p
                 ref={addToRefs}
                 className={getParagraphClassName(
@@ -274,7 +277,7 @@ const GenerateRandomWords = ({
               >
                 {letter}
               </p>
-            ))}
+            ))} */}
           </div>
         ))}
         {/* Add dummy code blocks for scrolling the last line */}
@@ -290,8 +293,6 @@ const GenerateRandomWords = ({
       <TypeChecker
         inputRef={inputFocusRef}
         wordList={randomWordList}
-        isRefreshClicked={isRefreshClicked}
-        randomListChange={lengthRandomList}
         onActiveLetterIndex={(index) => {
           setActiveLetterIndex(index);
         }}
