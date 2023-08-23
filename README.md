@@ -23,6 +23,21 @@ any contribution or improvements are encouraged and appreciated, i want to imple
  - Make the mode selector working perfectly
  - Thinking of making a docker image so that i can easily share the dev environment
 
+
+## Anyone who want to run the app( will upload to a domain eventually)
+
+1. First clone this repo (duh!!!!)
+2. Then run :
+```bash
+npm i 
+```
+   to install all the dependency
+
+3. Then run the dev server:
+```bash
+npm run dev
+```
+4. now you are ready to go.👍
 ## Credits
 
 - Me (obviously😎)
