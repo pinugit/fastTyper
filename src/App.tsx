@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Cursor from "./components/cursor";
 import { BsKeyboard } from "react-icons/bs";
 import SettingTopBar from "./components/TopSettingsBar/SettingTopBar";
@@ -17,7 +17,7 @@ function App() {
   const [paraLength, setParaLength] = useState(15);
   const [isTestComplete, setTestComplete] = useState(false);
   const [activeWordIndex, setActiveWordIndex] = useState(0);
-  const [isTyingStarted, setTypingStarted] = useState(false);
+  const isTyingStarted = useRef(false);
 
   const handleWordModeChange = (mode: number) => {
     setParaLength(mode);
@@ -43,7 +43,7 @@ function App() {
 
   const handleNumberOfLetterPassed = (activeLetterIndexDirect: number) => {
     if (activeLetterIndexDirect === 1) {
-      setTypingStarted(true);
+      isTyingStarted.current = true;
     }
   };
 
@@ -85,6 +85,7 @@ function App() {
                 />
               </div>
               <TypingArea
+                onTestStarted={isTyingStarted.current}
                 lengthRandomList={paraLength}
                 isRefreshClicked={isRefreshClicked}
                 onType={(coordinates) => handleCoordinates(coordinates)}

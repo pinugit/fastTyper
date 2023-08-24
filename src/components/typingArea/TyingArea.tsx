@@ -18,9 +18,16 @@ interface linesInContainer {
   noOfWords: number;
 }
 
+interface typedData {
+  pElement: HTMLParagraphElement;
+  index: number;
+  value: string;
+}
+
 interface props {
   lengthRandomList: number;
   isRefreshClicked: boolean;
+  onTestStarted: boolean;
   onType: (coordinates: coordinates) => void;
   onTestComplete: (isTestComplete: boolean) => void;
   onLetterPassed: (numberOfLetterPassed: number) => void;
@@ -56,16 +63,21 @@ const TypingArea = ({
   const [firstWordCoordinates, setFirstWordCoordinates] = useState<coordinates>(
     { x: 0, y: 0 }
   );
+  const [typedData, setTypedData] = useState<typedData[]>([]);
+  const [timestamps, setTimestamps] = useState<number[]>([]);
+  const [timeDifferences, setTimeDifferences] = useState<number[]>([]);
+  const [isTestComplete, setTestComplete] = useState(false);
+  const [isTestStarted, setTestStarted] = useState(false);
+  const [timestampsWord, setTimestampsWord] = useState<number[]>([]);
+  const [timeDifferencesWord, setTimeDifferencesWord] = useState<number[]>([]);
 
   const findAnElementIndexFromSecondLine = () => {
     const indexForThePElement =
       linesInfo[0]?.noOfWords + linesInfo[1]?.noOfWords - 3;
-    console.log(indexForThePElement);
     let wordIndex = 0;
     for (let i = 0; i < indexForThePElement; i++) {
       wordIndex += wordInfo[i]?.noOfItems;
     }
-    console.log(wordIndex);
 
     setWordIndexFromSecondLine(wordIndex);
   };
@@ -222,8 +234,6 @@ const TypingArea = ({
       }
     }
 
-    console.log(linesInfoDirect);
-
     if (whichLine >= 1) {
       if (whichLine >= lastLineIndex) {
         yValue = updatedCoordinateList[count]?.top;
@@ -271,6 +281,17 @@ const TypingArea = ({
     }
   };
 
+  const calculateTypingData = (wordElement: HTMLParagraphElement) => {
+    setTypedData((prev) => [
+      ...prev,
+      {
+        pElement: wordElement,
+        value: wordElement.innerHTML,
+        index: activeWordIndex,
+      },
+    ]);
+  };
+
   useEffect(() => {
     calculateInitialCoordinateList();
     calculateLineInfoState();
@@ -283,6 +304,7 @@ const TypingArea = ({
     onWordPassed(activeWordIndex);
     if (activeWordIndex === lengthRandomList) {
       onTestComplete(true);
+      setTestComplete(true);
       handleRefresh();
       handleCoordinateReset();
     }
@@ -316,6 +338,50 @@ const TypingArea = ({
       handleRefresh();
     }
   }, [isRefreshClicked]);
+
+  useEffect(() => {
+    // Get the current timestamp
+    const currentTime = Date.now();
+
+    // Calculate time differences
+    if (timestamps.length >= 1) {
+      const lastTimestamp = timestamps[timestamps.length - 1];
+      const diff = currentTime - lastTimestamp;
+      setTimeDifferencesWord((prevDifferences) => [
+        ...prevDifferences,
+        diff / 1000,
+      ]);
+    }
+
+    // Update the timestamps array
+    setTimestampsWord((prevTimestamps) => [...prevTimestamps, currentTime]);
+    console.log("runned");
+  }, [activeWordIndex]);
+
+  useEffect(() => {
+    // Get the current timestamp
+    const currentTime = Date.now();
+
+    // Calculate time differences
+    if (timestamps.length >= 1) {
+      const lastTimestamp = timestamps[timestamps.length - 1];
+      const diff = currentTime - lastTimestamp;
+      setTimeDifferences((prevDifferences) => [
+        ...prevDifferences,
+        diff / 1000,
+      ]);
+    }
+
+    // Update the timestamps array
+    setTimestamps((prevTimestamps) => [...prevTimestamps, currentTime]);
+    console.log("runned the test");
+  }, [isTestStarted, isTestComplete]);
+
+  useEffect(() => {
+    console.log("test", timeDifferences);
+    console.log("word time", timeDifferencesWord);
+  }, [timeDifferences, timeDifferencesWord]);
+
   return (
     <>
       <div
