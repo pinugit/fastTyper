@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Cursor from "./components/cursor";
 import { BsKeyboard } from "react-icons/bs";
-import SettingTopBar from "./components/SettingTopBar";
+import SettingTopBar from "./components/TopSettingsBar/SettingTopBar";
 import RefreshButton from "./components/RefreshButton";
 import TypingArea from "./components/typingArea/TyingArea";
 
