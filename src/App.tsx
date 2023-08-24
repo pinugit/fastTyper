@@ -4,6 +4,7 @@ import { BsKeyboard } from "react-icons/bs";
 import SettingTopBar from "./components/TopSettingsBar/SettingTopBar";
 import RefreshButton from "./components/RefreshButton";
 import TypingArea from "./components/typingArea/TyingArea";
+import TestResult from "./components/TestResult/TestResult";
 
 interface Coordinates {
   x: number;
@@ -12,13 +13,17 @@ interface Coordinates {
 function App() {
   const [coordinates, setCoordinated] = useState<Coordinates>();
   const [isRefreshClicked, setRefreshClicked] = useState(false);
-  const handleCoordinates = (coordinates: Coordinates) => {
-    setCoordinated(coordinates);
-  };
   const [paraLength, setParaLength] = useState(15);
+  const [isTestComplete, setTestComplete] = useState(false);
+
   const handleWordModeChange = (mode: number) => {
     setParaLength(mode);
   };
+
+  const handleCoordinates = (coordinates: Coordinates) => {
+    setCoordinated(coordinates);
+  };
+
   const handleRefresh = () => {
     setRefreshClicked(true);
     setTimeout(() => {
@@ -26,9 +31,17 @@ function App() {
     }, 100);
     console.log("button clicked");
   };
+
+  const handleTestComplete = (isTestComplete: boolean) => {
+    if (isTestComplete) {
+      setTestComplete(true);
+    }
+  };
+
   return (
     <>
       <Cursor
+        isTestComplete={isTestComplete}
         x={coordinates?.x !== undefined ? coordinates.x : 0}
         y={coordinates?.y !== undefined ? coordinates.y : 0}
       />
@@ -37,21 +50,30 @@ function App() {
           <BsKeyboard className="text-gruv-light-gray text-4xl mr-2" />
           <h1 className="text-3xl text-gruv-light-yello">fastTyper</h1>
         </div>
-        <div className="flex flex-col mt-7">
-          <div className="flex justify-center mb-36 ">
-            <SettingTopBar
-              onWordModeChange={(mode) => handleWordModeChange(mode)}
-            />
-          </div>
-          <TypingArea
-            onType={(coordinates) => handleCoordinates(coordinates)}
-            lengthRandomList={paraLength}
-            isRefreshClicked={isRefreshClicked}
-          />
-        </div>
-        <div className="h-5 flex justify-center align-middle mt-10">
-          <RefreshButton onRefresh={() => handleRefresh()} />
-        </div>
+        {isTestComplete ? (
+          <TestResult />
+        ) : (
+          <>
+            <div className="flex flex-col mt-7">
+              <div className="flex justify-center mb-36 ">
+                <SettingTopBar
+                  onWordModeChange={(mode) => handleWordModeChange(mode)}
+                />
+              </div>
+              <TypingArea
+                lengthRandomList={paraLength}
+                isRefreshClicked={isRefreshClicked}
+                onType={(coordinates) => handleCoordinates(coordinates)}
+                onTestComplete={(isTestComplete) =>
+                  handleTestComplete(isTestComplete)
+                }
+              />
+            </div>
+            <div className="h-5 flex justify-center align-middle mt-10">
+              <RefreshButton onRefresh={() => handleRefresh()} />
+            </div>
+          </>
+        )}
       </div>
     </>
   );

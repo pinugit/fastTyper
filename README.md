@@ -19,6 +19,7 @@ any contribution or improvements are encouraged and appreciated, i want to imple
 
  ## What i am currently working on
 
+ - Making a test completing screen
  - Making the typing area fully functional
  - Make the mode selector working perfectly
  - Thinking of making a docker image so that i can easily share the dev environment

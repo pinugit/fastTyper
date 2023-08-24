@@ -22,9 +22,15 @@ interface props {
   lengthRandomList: number;
   isRefreshClicked: boolean;
   onType: (coordinates: coordinates) => void;
+  onTestComplete: (isTestComplete: boolean) => void;
 }
 
-const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
+const TypingArea = ({
+  onType,
+  isRefreshClicked,
+  lengthRandomList,
+  onTestComplete,
+}: props) => {
   const [randomListLength, setRandomListLength] = useState(lengthRandomList);
   const [randomWordList, setRandomWordList] = useState(
     getRandomWordList(commonWords, randomListLength)
@@ -46,44 +52,6 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
   const [firstWordCoordinates, setFirstWordCoordinates] = useState<coordinates>(
     { x: 0, y: 0 }
   );
-  useEffect(() => {
-    calculateInitialCoordinateList();
-    calculateLineInfoState();
-    calculateWordInfoState();
-  }, []);
-
-  useEffect(() => {
-    scrollActiveWordIntoView();
-  }, [activeWordIndex, activeLetterIndex]);
-
-  useEffect(() => {
-    findAnElementIndexFromSecondLine();
-  }, [linesInfo, wordInfo]);
-
-  useEffect(() => {
-    if (timesRun < 7) {
-      setInitialYValue(coordinateList[wordIndexFromSecondLine]?.top);
-      setFirstWordCoordinates({
-        x: coordinateList[0]?.left,
-        y: coordinateList[0]?.top,
-      });
-      setTimeRun((prev) => prev + 1);
-    }
-  }, [count]);
-
-  useEffect(() => {
-    setRandomListLength(lengthRandomList);
-    handleRefresh();
-    if (count > 1) {
-      handleCoordinateReset();
-    }
-  }, [lengthRandomList]);
-
-  useEffect(() => {
-    if (isRefreshClicked) {
-      handleRefresh();
-    }
-  }, [isRefreshClicked]);
 
   const findAnElementIndexFromSecondLine = () => {
     const indexForThePElement =
@@ -172,7 +140,6 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
     if (noOfWords > 0) {
       newLinesInfo.push({ lineIndex, noOfWords });
     }
-
     return newLinesInfo;
   };
 
@@ -289,6 +256,47 @@ const TypingArea = ({ onType, isRefreshClicked, lengthRandomList }: props) => {
     }
   };
 
+  useEffect(() => {
+    calculateInitialCoordinateList();
+    calculateLineInfoState();
+    calculateWordInfoState();
+  }, []);
+
+  useEffect(() => {
+    scrollActiveWordIntoView();
+    if (activeWordIndex === lengthRandomList) {
+      onTestComplete(true);
+    }
+  }, [activeWordIndex, activeLetterIndex]);
+
+  useEffect(() => {
+    findAnElementIndexFromSecondLine();
+  }, [linesInfo, wordInfo]);
+
+  useEffect(() => {
+    if (timesRun < 7) {
+      setInitialYValue(coordinateList[wordIndexFromSecondLine]?.top);
+      setFirstWordCoordinates({
+        x: coordinateList[0]?.left,
+        y: coordinateList[0]?.top,
+      });
+      setTimeRun((prev) => prev + 1);
+    }
+  }, [count]);
+
+  useEffect(() => {
+    setRandomListLength(lengthRandomList);
+    handleRefresh();
+    if (count > 1) {
+      handleCoordinateReset();
+    }
+  }, [lengthRandomList]);
+
+  useEffect(() => {
+    if (isRefreshClicked) {
+      handleRefresh();
+    }
+  }, [isRefreshClicked]);
   return (
     <>
       <div
