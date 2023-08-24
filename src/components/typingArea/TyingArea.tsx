@@ -23,6 +23,8 @@ interface props {
   isRefreshClicked: boolean;
   onType: (coordinates: coordinates) => void;
   onTestComplete: (isTestComplete: boolean) => void;
+  onLetterPassed: (numberOfLetterPassed: number) => void;
+  onWordPassed: (numberOfWordPassed: number) => void;
 }
 
 const TypingArea = ({
@@ -30,6 +32,8 @@ const TypingArea = ({
   isRefreshClicked,
   lengthRandomList,
   onTestComplete,
+  onLetterPassed,
+  onWordPassed,
 }: props) => {
   const [randomListLength, setRandomListLength] = useState(lengthRandomList);
   const [randomWordList, setRandomWordList] = useState(
@@ -251,7 +255,8 @@ const TypingArea = ({
         y: yValue,
       });
       setCount(count - 1);
-    } else if (keyDown === "correct") {
+    }
+    if (keyDown === "correct") {
       onType({
         x: updatedCoordinateList[count]?.left,
         y: yValue,
@@ -274,6 +279,8 @@ const TypingArea = ({
 
   useEffect(() => {
     scrollActiveWordIntoView();
+    onLetterPassed(activeLetterIndex);
+    onWordPassed(activeWordIndex);
     if (activeWordIndex === lengthRandomList) {
       onTestComplete(true);
       handleRefresh();

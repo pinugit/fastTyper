@@ -5,6 +5,7 @@ import SettingTopBar from "./components/TopSettingsBar/SettingTopBar";
 import RefreshButton from "./components/RefreshButton";
 import TypingArea from "./components/typingArea/TyingArea";
 import TestResult from "./components/TestResult/TestResult";
+import WordCounter from "./components/WordCounter/WordCounter";
 
 interface Coordinates {
   x: number;
@@ -15,6 +16,8 @@ function App() {
   const [isRefreshClicked, setRefreshClicked] = useState(false);
   const [paraLength, setParaLength] = useState(15);
   const [isTestComplete, setTestComplete] = useState(false);
+  const [activeWordIndex, setActiveWordIndex] = useState(0);
+  const [isTyingStarted, setTypingStarted] = useState(false);
 
   const handleWordModeChange = (mode: number) => {
     setParaLength(mode);
@@ -38,6 +41,16 @@ function App() {
     }
   };
 
+  const handleNumberOfLetterPassed = (activeLetterIndexDirect: number) => {
+    if (activeLetterIndexDirect === 1) {
+      setTypingStarted(true);
+    }
+  };
+
+  const handleNumberOfWordPassed = (activeWordIndexDirect: number) => {
+    setActiveWordIndex(activeWordIndexDirect + 1);
+  };
+
   return (
     <>
       <Cursor
@@ -54,10 +67,21 @@ function App() {
           <TestResult />
         ) : (
           <>
-            <div className="flex flex-col mt-7">
-              <div className="flex justify-center mb-36 ">
+            <div id="typing-page" className="flex flex-col mt-7">
+              <div
+                id="container-for-topbar-typingArea-and-refreshButton"
+                className={`flex justify-center mb-36 ${
+                  isTyingStarted ? "hidden" : " "
+                }`}
+              >
                 <SettingTopBar
                   onWordModeChange={(mode) => handleWordModeChange(mode)}
+                />
+              </div>
+              <div className={`${!isTyingStarted ? "hidden" : "mt-36"}`}>
+                <WordCounter
+                  typedWord={activeWordIndex}
+                  totalWord={paraLength}
                 />
               </div>
               <TypingArea
@@ -67,9 +91,20 @@ function App() {
                 onTestComplete={(isTestComplete) =>
                   handleTestComplete(isTestComplete)
                 }
+                onLetterPassed={(activeLetterIndexDirect) =>
+                  handleNumberOfLetterPassed(activeLetterIndexDirect)
+                }
+                onWordPassed={(activeWordIndexDirect) => {
+                  handleNumberOfWordPassed(activeWordIndexDirect);
+                }}
               />
             </div>
-            <div className="h-5 flex justify-center align-middle mt-10">
+            <div
+              id="container-for-refreshbutton"
+              className={`h-5 flex justify-center align-middle mt-10 ${
+                isTyingStarted ? "hidden" : ""
+              }`}
+            >
               <RefreshButton onRefresh={() => handleRefresh()} />
             </div>
           </>

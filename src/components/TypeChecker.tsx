@@ -97,19 +97,12 @@ const TypeChecker = ({
     setActiveLetterIndex(0);
     setActiveWordIndex(0);
   }, [randomListChange]);
-  // const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  // const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (event.key === "Backspace") {
-  //     console.log("Backspace key pressed");
-  //     onBackspacePress(true);
-  //   }
-  // };
+
   return (
     <input
       className="absolute top-[-999px]"
       ref={inputRef}
       type="text"
-      value={inputValue}
       defaultValue={inputValue}
       onKeyDown={handleKeyPress}
     />

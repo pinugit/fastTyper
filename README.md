@@ -16,15 +16,18 @@ any contribution or improvements are encouraged and appreciated, i want to imple
   - The paragraph length selector is working 
   - The top bar is somewhat working
   - When we complete the test the test Result screen will show up(for now the result screen is just a empty text)
+  - when start typing the topbar will hide and the word counter will be displayed
   - For now these are the only things that are working 😭
 
 
  ## What i am currently working on
 
- - Making a test completing screen
- - Making the typing area fully functional
- - Make the mode selector working perfectly
- - Thinking of making a docker image so that i can easily share the dev environment
+ - Working on displaying the TimeWatch depending on the mode.
+ - Started working on the data that will be shown on the result Screen(like wpm, time-taken, accuracy, etc).
+ - Making a test completing screen.
+ - Making the typing area fully functional.
+ - Make the mode selector working perfectly.
+ - Thinking of making a docker image so that i can easily share the dev environment.
 
 
 ## Anyone who want to run the app( will upload to a domain eventually)
@@ -51,7 +54,3 @@ npm run dev
 
 ![funny skeleton typing](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExam52aTU1NW1odGpiaDR1YWcwM2Z2ZGV5ajE1ajc2amR2ZXN0YXlscyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ThrM4jEi2lBxd7X2yz/giphy.gif)
 
-
-## And one more thing 
-
-If this is illegal please let me know 
