@@ -2,7 +2,7 @@ interface props {
   randomListLength: number;
 }
 const DummyDivElementRenderer = ({ randomListLength }: props) => {
-  const numberOfDummyBlocks = randomListLength;
+  const numberOfDummyBlocks = randomListLength * 3;
   return (
     <>
       {Array.from({ length: numberOfDummyBlocks }).map((_, index) => (

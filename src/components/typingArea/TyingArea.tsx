@@ -296,6 +296,7 @@ const TypingArea = ({
     calculateInitialCoordinateList();
     calculateLineInfoState();
     calculateWordInfoState();
+    console.log(activeLetterIndex);
   }, []);
 
   useEffect(() => {

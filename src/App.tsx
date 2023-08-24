@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Cursor from "./components/cursor";
 import { BsKeyboard } from "react-icons/bs";
 import SettingTopBar from "./components/TopSettingsBar/SettingTopBar";
@@ -51,6 +51,9 @@ function App() {
     setActiveWordIndex(activeWordIndexDirect + 1);
   };
 
+  useEffect(() => {
+    console.log("isStarted", isTyingStarted);
+  }, []);
   return (
     <>
       <Cursor
@@ -71,14 +74,16 @@ function App() {
               <div
                 id="container-for-topbar-typingArea-and-refreshButton"
                 className={`flex justify-center mb-36 ${
-                  isTyingStarted ? "hidden" : " "
+                  isTyingStarted.current ? "hidden" : " "
                 }`}
               >
                 <SettingTopBar
                   onWordModeChange={(mode) => handleWordModeChange(mode)}
                 />
               </div>
-              <div className={`${!isTyingStarted ? "hidden" : "mt-36"}`}>
+              <div
+                className={`${!isTyingStarted.current ? "hidden" : "mt-36"}`}
+              >
                 <WordCounter
                   typedWord={activeWordIndex}
                   totalWord={paraLength}
@@ -103,7 +108,7 @@ function App() {
             <div
               id="container-for-refreshbutton"
               className={`h-5 flex justify-center align-middle mt-10 ${
-                isTyingStarted ? "hidden" : ""
+                isTyingStarted.current ? "hidden" : ""
               }`}
             >
               <RefreshButton onRefresh={() => handleRefresh()} />
