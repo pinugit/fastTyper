@@ -12,10 +12,12 @@ any contribution or improvements are encouraged and appreciated, i want to imple
 ## What have I already made 🔥
 
   - The basic structure of the home page is implemented
-  - Typing is working (but backspace and any other shortcut don't work)
+  - Typing is working (keyboard shortcuts are currently not working)
   - The paragraph length selector is working 
   - The top bar is somewhat working
+  - When we complete the test the test Result screen will show up(for now the result screen is just a empty text)
   - For now these are the only things that are working 😭
+
 
  ## What i am currently working on
 
@@ -27,7 +29,8 @@ any contribution or improvements are encouraged and appreciated, i want to imple
 
 ## Anyone who want to run the app( will upload to a domain eventually)
 
-1. First clone this repo (duh!!!!)
+1. First clone this repo and
+    install node.js (duh!!)
 2. Then run :
 ```bash
 npm i 

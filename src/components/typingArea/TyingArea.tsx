@@ -229,18 +229,29 @@ const TypingArea = ({
     } else {
       yValue = updatedCoordinateList[count]?.top;
     }
-    return yValue;
+    return [yValue, whichLine];
   };
 
-  const handleCorrectType = (isCorrect: boolean) => {
+  const handleCoordinatePassOnKeyPress = (keyDown: string) => {
     const updatedCoordinateList = pRefs.current.map((p) =>
       p.getBoundingClientRect()
     );
     setCoordinateList(updatedCoordinateList);
 
-    const yValue = calculateYValueBasedOnLineNumber(updatedCoordinateList);
+    let [yValue, whichLine] = calculateYValueBasedOnLineNumber(
+      updatedCoordinateList
+    );
 
-    if (isCorrect) {
+    if (keyDown === "backspace") {
+      if (whichLine <= 1) {
+        yValue = updatedCoordinateList[count - 2]?.top;
+      }
+      onType({
+        x: updatedCoordinateList[count - 2]?.left,
+        y: yValue,
+      });
+      setCount(count - 1);
+    } else if (keyDown === "correct") {
       onType({
         x: updatedCoordinateList[count]?.left,
         y: yValue,
@@ -327,9 +338,7 @@ const TypingArea = ({
         onActiveWordIndex={(index) => {
           setActiveWordIndex(index);
         }}
-        onCorrectType={(isCorrect) => {
-          handleCorrectType(isCorrect);
-        }}
+        onKeyPressed={(keyDown) => handleCoordinatePassOnKeyPress(keyDown)}
       />
     </>
   );
