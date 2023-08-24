@@ -1,9 +1,4 @@
-import React, { useState, useEffect } from "react";
-
-interface CursorProps {
-  x: number;
-  y: number;
-}
+import { useState, useEffect } from "react";
 
 interface props {
   x: number;
