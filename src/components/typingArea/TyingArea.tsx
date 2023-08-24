@@ -189,7 +189,6 @@ const TypingArea = ({
 
   const handleCoordinateReset = () => {
     onType({ x: firstWordCoordinates?.x, y: firstWordCoordinates?.y });
-    console.log(firstWordCoordinates);
   };
 
   const calculateYValueBasedOnLineNumber = (
@@ -266,6 +265,8 @@ const TypingArea = ({
     scrollActiveWordIntoView();
     if (activeWordIndex === lengthRandomList) {
       onTestComplete(true);
+      handleRefresh();
+      handleCoordinateReset();
     }
   }, [activeWordIndex, activeLetterIndex]);
 
