@@ -43,7 +43,6 @@ function App() {
 
   const handleNumberOfLetterPassed = (activeLetterIndexDirect: number) => {
     if (activeLetterIndexDirect === 1) {
-      isTyingStarted.current = true;
     }
   };
 
@@ -51,9 +50,6 @@ function App() {
     setActiveWordIndex(activeWordIndexDirect + 1);
   };
 
-  useEffect(() => {
-    console.log("isStarted", isTyingStarted);
-  }, []);
   return (
     <>
       <Cursor
