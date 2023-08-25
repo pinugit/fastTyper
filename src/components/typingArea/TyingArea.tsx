@@ -63,15 +63,9 @@ const TypingArea = ({
   const [firstWordCoordinates, setFirstWordCoordinates] = useState<coordinates>(
     { x: 0, y: 0 }
   );
-  const [typedData, setTypedData] = useState<typedData[]>([]);
-  const [timestamps, setTimestamps] = useState<number[]>([]);
   const [timeDifferences, setTimeDifferences] = useState<number[]>([]);
-  const [isTestComplete, setTestComplete] = useState(false);
   const [isTestStarted, setTestStarted] = useState(false);
-  const [isLastRun, setLastRun] = useState(false);
-  const [wordTimeList, setWordTimeList] = useState<number[]>(
-    Array(lengthRandomList).fill(0)
-  );
+  const timeStamps = useRef<number[]>([]);
 
   const findAnElementIndexFromSecondLine = () => {
     const indexForThePElement =
@@ -283,15 +277,29 @@ const TypingArea = ({
     }
   };
 
-  const calculateTypingData = (wordElement: HTMLParagraphElement) => {
-    setTypedData((prev) => [
-      ...prev,
-      {
-        pElement: wordElement,
-        value: wordElement.innerHTML,
-        index: activeWordIndex,
-      },
-    ]);
+  const insertLastValueToTimeStamp = () => {
+    const current = Date.now();
+    timeStamps.current = [...timeStamps.current, current];
+  };
+
+  const calculateTimeDifferenceForWords = () => {
+    let prevTimeStampValue = timeStamps.current[0];
+    let tempList = [];
+    let total = 0;
+    for (let index = 1; index < timeStamps.current.length; index++) {
+      const currentTimeStampValue = timeStamps.current[index];
+      const timeDifferenceInSeconds =
+        (currentTimeStampValue - prevTimeStampValue) / 1000;
+      tempList.push(timeDifferenceInSeconds);
+      total += timeDifferenceInSeconds;
+      setTimeDifferences((prev) => [...prev, timeDifferenceInSeconds]);
+      prevTimeStampValue = currentTimeStampValue;
+      console.log("time stamps value ", currentTimeStampValue);
+    }
+    const wpm = lengthRandomList / (total / 60);
+    console.log(tempList);
+    console.log("total", total);
+    console.log("wpm", wpm);
   };
 
   useEffect(() => {
@@ -309,18 +317,12 @@ const TypingArea = ({
 
     if (activeWordIndex === lengthRandomList) {
       onTestComplete(true);
-      setTestComplete(true);
       tempTestComplete.current = true;
-      //next two line will set the timeStamp when the test is finished
-      const current = Date.now();
-      tempTimeStamps.current = [...tempTimeStamps.current, current];
+      insertLastValueToTimeStamp();
+      calculateTimeDifferenceForWords();
 
       handleRefresh();
       handleCoordinateReset();
-    }
-
-    if (activeWordIndex - 1 === lengthRandomList) {
-      setLastRun(true);
     }
 
     if (activeLetterIndex === 1 && activeWordIndex === 0) {
@@ -356,18 +358,17 @@ const TypingArea = ({
       handleRefresh();
     }
   }, [isRefreshClicked]);
-  const tempTimeStamps = useRef<number[]>([]);
 
   useEffect(() => {
     //when test Starts we Insert a time stamp
 
-    tempTimeStamps.current = [Date.now()];
+    timeStamps.current = [Date.now()];
   }, [isTestStarted]);
 
   useEffect(() => {
     // now for every actieWordIndex change we insert a timestamp
     const currentTime = Date.now();
-    tempTimeStamps.current = [...tempTimeStamps.current, currentTime];
+    timeStamps.current = [...timeStamps.current, currentTime];
   }, [activeWordIndex]);
 
   const tempTestComplete = useRef(false);
