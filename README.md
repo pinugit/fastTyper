@@ -22,11 +22,12 @@ any contribution or improvements are encouraged and appreciated, i want to imple
 
  ## What i am currently working on
 
+ - Working to make the app usable so that i can uploat it on github pages
  - Working on displaying the TimeWatch depending on the mode.
  - Started working on the data that will be shown on the result Screen(like wpm, time-taken, accuracy, etc).
  - Making a test completing screen.
  - Making the typing area fully functional.
- - Make the mode selector working perfectly.
+ - Make the mode selector working perfectly. 
  - Thinking of making a docker image so that i can easily share the dev environment.
 
 

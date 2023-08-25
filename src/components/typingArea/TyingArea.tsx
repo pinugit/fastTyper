@@ -18,12 +18,6 @@ interface linesInContainer {
   noOfWords: number;
 }
 
-interface typedData {
-  pElement: HTMLParagraphElement;
-  index: number;
-  value: string;
-}
-
 interface props {
   lengthRandomList: number;
   isRefreshClicked: boolean;
