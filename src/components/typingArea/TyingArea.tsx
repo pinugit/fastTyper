@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import commonWords from "../randomWordLIst";
 import getRandomWordList from "../getRandomWords";
 import TypeChecker from "../TypeChecker";
@@ -45,11 +45,6 @@ const TypingArea = ({
   const [coordinateList, setCoordinateList] = useState<DOMRect[]>([]);
   const [count, setCount] = useState(1);
   const [linesInfo, setLinesInfo] = useState<linesInContainer[]>([]); // State for lines information
-  const inputFocusRef = useRef<HTMLInputElement>(null);
-  const pRefs = useRef<HTMLParagraphElement[]>([]);
-  pRefs.current = [];
-  const WordRefs = useRef<HTMLDivElement[]>([]);
-  WordRefs.current = [];
   const [initialYValue, setInitialYValue] = useState(0);
   const [wordIndexFromSecondLine, setWordIndexFromSecondLine] = useState(0);
   const [timesRun, setTimeRun] = useState(0);
@@ -59,7 +54,14 @@ const TypingArea = ({
   );
   const [timeDifferences, setTimeDifferences] = useState<number[]>([]);
   const [isTestStarted, setTestStarted] = useState(false);
+
+  const pRefs = useRef<HTMLParagraphElement[]>([]);
+  const WordRefs = useRef<HTMLDivElement[]>([]);
   const timeStamps = useRef<number[]>([]);
+  const inputFocusRef = useRef<HTMLInputElement>(null);
+
+  WordRefs.current = [];
+  pRefs.current = [];
 
   const findAnElementIndexFromSecondLine = () => {
     const indexForThePElement =
@@ -92,10 +94,13 @@ const TypingArea = ({
     const wordDivWidth = WordRefs.current.map(
       (wordRef) => wordRef.getBoundingClientRect().width + 9.6
     );
+
     let currentLineWordLengthTotal = 0;
     let lineIndex = 0;
     let noOfWords = 0;
+
     const newLinesInfo = []; // Create a new array to update lines information
+
     wordDivWidth.forEach((currentWordWidth) => {
       if (currentLineWordLengthTotal + currentWordWidth <= mainDivWidth) {
         currentLineWordLengthTotal += currentWordWidth;
@@ -188,9 +193,8 @@ const TypingArea = ({
 
   const handleRefresh = () => {
     setRandomWordList(getRandomWordList(commonWords, lengthRandomList));
-    setActiveLetterIndex(0);
-    setActiveWordIndex(0);
     setCount(1);
+    calculateInitialCoordinateList();
   };
 
   const handleCoordinateReset = () => {
@@ -257,11 +261,31 @@ const TypingArea = ({
       setCount(count - 1);
     }
     if (keyDown === "correct") {
-      onType({
-        x: updatedCoordinateList[count]?.left,
-        y: yValue,
-      });
-      setCount(count + 1);
+      if (
+        updatedCoordinateList[count]?.left === undefined &&
+        yValue === undefined
+      ) {
+        onType({
+          x: coordinateList[count].left,
+          y: coordinateList[count].top,
+        });
+      } else {
+        onType({
+          x: updatedCoordinateList[count]?.left,
+          y: yValue,
+        });
+        console.log(
+          "X",
+          updatedCoordinateList[count]?.left,
+          "y",
+          yValue,
+          "count",
+          count
+        );
+        console.log(coordinateList);
+      }
+
+      setCount((prevCount) => prevCount + 1);
     }
   };
 
@@ -300,14 +324,12 @@ const TypingArea = ({
     calculateInitialCoordinateList();
     calculateLineInfoState();
     calculateWordInfoState();
-    console.log(activeLetterIndex);
   }, []);
 
   useEffect(() => {
     scrollActiveWordIntoView();
     onLetterPassed(activeLetterIndex);
     onWordPassed(activeWordIndex);
-    console.log(activeWordIndex, lengthRandomList);
 
     if (activeWordIndex === lengthRandomList) {
       onTestComplete(true);
