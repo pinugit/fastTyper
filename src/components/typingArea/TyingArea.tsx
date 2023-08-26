@@ -24,7 +24,6 @@ interface props {
   onTestStarted: boolean;
   onType: (coordinates: coordinates) => void;
   onTestComplete: (isTestComplete: boolean) => void;
-  onLetterPassed: (numberOfLetterPassed: number) => void;
   onWordPassed: (numberOfWordPassed: number) => void;
 }
 
@@ -33,7 +32,6 @@ const TypingArea = ({
   isRefreshClicked,
   lengthRandomList,
   onTestComplete,
-  onLetterPassed,
   onWordPassed,
 }: props) => {
   const [randomListLength, setRandomListLength] = useState(lengthRandomList);
@@ -331,7 +329,6 @@ const TypingArea = ({
 
   useEffect(() => {
     scrollActiveWordIntoView();
-    onLetterPassed(activeLetterIndex);
     onWordPassed(activeWordIndex);
 
     if (activeWordIndex === lengthRandomList) {

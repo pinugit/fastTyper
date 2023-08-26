@@ -41,11 +41,6 @@ function App() {
     }
   };
 
-  const handleNumberOfLetterPassed = (activeLetterIndexDirect: number) => {
-    if (activeLetterIndexDirect === 1) {
-    }
-  };
-
   const handleNumberOfWordPassed = (activeWordIndexDirect: number) => {
     setActiveWordIndex(activeWordIndexDirect + 1);
   };
@@ -92,9 +87,6 @@ function App() {
                 onType={(coordinates) => handleCoordinates(coordinates)}
                 onTestComplete={(isTestComplete) =>
                   handleTestComplete(isTestComplete)
-                }
-                onLetterPassed={(activeLetterIndexDirect) =>
-                  handleNumberOfLetterPassed(activeLetterIndexDirect)
                 }
                 onWordPassed={(activeWordIndexDirect) => {
                   handleNumberOfWordPassed(activeWordIndexDirect);
