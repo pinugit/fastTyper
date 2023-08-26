@@ -201,11 +201,15 @@ const TypingArea = ({
     onType({ x: firstWordCoordinates?.x, y: firstWordCoordinates?.y });
   };
 
+  const linesInfoDirect = useMemo(
+    () => calculateLineInfoStateReturner(),
+    [lengthRandomList]
+  );
+
   const calculateYValueBasedOnLineNumber = (
     updatedCoordinateList: DOMRect[]
   ) => {
     // Initialize variables to keep track of the current line and word
-    const linesInfoDirect = calculateLineInfoStateReturner();
     let yValue = 0;
     let whichLine = 0;
     let currentWord = 0;
@@ -282,7 +286,6 @@ const TypingArea = ({
           "count",
           count
         );
-        console.log(coordinateList);
       }
 
       setCount((prevCount) => prevCount + 1);
